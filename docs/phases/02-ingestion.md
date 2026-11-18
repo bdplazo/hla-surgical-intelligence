@@ -1,6 +1,6 @@
 # Phase 02 — Ingestion
 
-Status: Implemented and locally verified; awaiting user review. User explicitly authorized this scope on 2026-11-18. See ../PHASE_02_REPORT.md.
+Status: Complete and accepted by the user on 2026-11-18, including identity/provenance decisions. User explicitly authorized this scope on 2026-11-18. See ../PHASE_02_REPORT.md.
 
 ## 1. Objective
 Preserve local synthetic JSON/CSV and replay safely.
@@ -27,7 +27,7 @@ Missing IDs, reused IDs, CSV type loss and partial processing.
 ## 12. Expected deliverables
 Readers, raw store, seed generator and ingestion tests.
 ## 13. Completion checklist
-- [ ] Acceptance criteria verified and review recorded.
+- [x] Acceptance criteria verified and user review accepted on 2026-11-18.
 - [x] Relevant checks executed and evidence recorded.
 - [x] Documentation, limitations and implementation authorization recorded. Next-phase approval remains pending.
 ## 14. Learning objectives

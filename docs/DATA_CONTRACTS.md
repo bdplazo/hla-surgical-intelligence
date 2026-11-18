@@ -25,3 +25,6 @@ The user accepted these design rules: identical tenant/source/event ID and conte
 
 ## Implemented raw envelope
 See INGESTION.md for normalized storage of source bytes, payload variants, metadata and receipt provenance. The canonical event contract above remains unimplemented; the Phase 02 schema does not change it. Raw source descriptors are JSON context configuration, not approved canonical field mappings. Missing/invalid identity and reused-ID content conflicts have structured reason codes; all other raw business fields are preserved unchanged.
+
+## Phase 02 review acceptance — 2026-11-18
+The user explicitly accepted the implemented identity/provenance decisions, including tenant/source-scoped identity, content variants, conflict preservation, replay receipts, original-byte retention and the documented limits of unidentified file/row locators. This acceptance does not authorize starting Phase 03 or change the proposed canonical schema.
