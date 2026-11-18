@@ -8,6 +8,8 @@ from pathlib import Path
 from time import perf_counter
 from uuid import uuid4
 
+from hla_lab.agents.schemas import MappingReference
+from hla_lab.agents.workflow import run_copilot
 from hla_lab.config import ConfigurationError, load_settings
 from hla_lab.contracts.events import parse_instant
 from hla_lab.ingestion.pipeline import ingest_file
@@ -40,7 +42,19 @@ def main(argv: list[str] | None = None) -> None:
     validate.add_argument("--approval", type=Path, required=True)
     validate.add_argument("--database", type=Path)
     validate.add_argument("--as-of", help="Aware ISO-8601 quality-report clock")
+    copilot = commands.add_parser(
+        "copilot", help="Generate unapproved mapping draft and read-only preview"
+    )
+    copilot.add_argument("--input", type=Path, required=True)
+    copilot.add_argument("--config", type=Path, required=True)
+    copilot.add_argument("--mapping-version", required=True)
+    copilot.add_argument("--output", type=Path, required=True, help="New artifact directory")
+    copilot.add_argument("--known-mapping", type=Path, action="append", default=[])
+    copilot.add_argument("--known-approval", type=Path, action="append", default=[])
+    copilot.add_argument("--as-of")
     args = parser.parse_args(argv)
+    if args.command == "copilot" and len(args.known_mapping) != len(args.known_approval):
+        parser.error("Each --known-mapping requires a matching --known-approval")
     started, run_id = perf_counter(), str(uuid4())
     try:
         settings = load_settings()
@@ -56,7 +70,31 @@ def main(argv: list[str] | None = None) -> None:
         )
         raise SystemExit(2) from None
     logger = configure_logging(settings.log_level)
-    if args.command == "approve-mapping":
+    if args.command == "copilot":
+        try:
+            clock = parse_instant(args.as_of) if args.as_of is not None else None
+        except (ValueError, OverflowError):
+            logger.error(
+                "copilot_clock_invalid",
+                extra={
+                    "run_id": run_id,
+                    "execution_status": "failed",
+                    "error_code": "INVALID_REPORT_CLOCK",
+                },
+            )
+            raise SystemExit(2) from None
+        references = [
+            MappingReference(mapping_path=str(mapping), approval_path=str(approval))
+            for mapping, approval in zip(args.known_mapping, args.known_approval, strict=True)
+        ]
+        try:
+            result = run_copilot(
+                args.input, args.config, args.mapping_version, args.output, references, clock
+            )
+        except (ValueError, OSError, RuntimeError):
+            raise SystemExit(2) from None
+        print(result.model_dump_json())
+    elif args.command == "approve-mapping":
         try:
             approval = approve_mapping(args.mapping, args.reviewer, args.output)
         except (ValueError, OSError, RuntimeError):

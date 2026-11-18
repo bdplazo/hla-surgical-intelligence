@@ -3,9 +3,9 @@
 Independent educational prototype inspired by healthcare integration challenges. Not an official Health Lean Analytics product, integration or deployment. Synthetic data exclusively.
 
 ## Problem and current scope
-Hospitals can name equivalent RFID fields differently. The planned Hospital Integration Copilot will propose reviewed mappings and deterministic validation. Implemented through Phase 03: local synthetic JSON/CSV generation, original-file preservation, raw SQLite ingestion, provenance, conflict/identity quarantine, replay audit, environment configuration, JSON logging, canonical Pydantic contracts, explicit YAML mappings, business quarantine and quality reports.
+Hospitals can name equivalent RFID fields differently. The deterministic Hospital Integration Copilot proposes mappings for human review and previews deterministic validation. Implemented through Phase 04: local synthetic JSON/CSV generation, original-file preservation, raw SQLite ingestion, provenance, conflict/identity quarantine, replay audit, environment configuration, JSON logging, canonical Pydantic contracts, explicit YAML mappings, business quarantine and quality reports.
 
-Canonical validation is a separate explicit step after raw ingestion. Current equipment state, agents, optimization and external transactions are not implemented. A stored raw row does not mean it is a valid RFID event; consult canonical_events or validation_quarantine for the chosen mapping version.
+Canonical validation is a separate explicit step after raw ingestion. Current equipment state, concrete LLM integration, optimization and external transactions are not implemented. A stored raw row does not mean it is a valid RFID event; consult canonical_events or validation_quarantine for the chosen mapping version.
 
 ## Setup (PowerShell)
 Python 3.11+ supported; 3.12 preferred. No API keys or cloud account required.
@@ -50,7 +50,17 @@ $raw = .\.venv\Scripts\python.exe -m hla_lab ingest --input data/synthetic/hospi
 .\.venv\Scripts\python.exe -m hla_lab validate --run-id $raw.run_id --mapping configs/hospital_a.yaml --approval artifacts/hospital_a.approval.json --as-of '2026-11-18T12:00:00Z'
 ```
 
-A yields 4 valid and 5 quarantined unique candidates; B yields 3 valid and 2 quarantined. UTC conversion, required fields, room/type dictionaries and identity conflict handling are deterministic. JSON reports include explicit success/quarantine/duplicate denominators, reasons and freshness. Results and reports persist in SQLite, linked to original records and immutable mapping versions. Revalidation reuses outcomes; changing a registered YAML requires a new version and approval. No agent is involved.
+A yields 4 valid and 5 quarantined unique candidates; B yields 3 valid and 2 quarantined. UTC conversion, required fields, room/type dictionaries and identity conflict handling are deterministic. JSON reports include explicit success/quarantine/duplicate denominators, reasons and freshness. Results and reports persist in SQLite, linked to original records and immutable mapping versions. Revalidation reuses outcomes; changing a registered YAML requires a new version and approval. The separate copilot can propose drafts; persisted validation remains deterministic and approval-gated.
+
+## Integration Copilot: draft and read-only preview
+
+Using the explicitly accepted A mapping as a same-hospital/source reference:
+
+```powershell
+.\.venv\Scripts\python.exe -m hla_lab copilot --input data/synthetic/hospital_a.json --config configs/hospital_a.json --mapping-version draft-1 --known-mapping configs/hospital_a.yaml --known-approval artifacts/hospital_a.approval.json --output artifacts/copilot-a-review --as-of '2026-11-18T12:00:00Z'
+```
+
+Choose a new output directory for each run. Inspect proposal.yaml and report.json. The workflow never approves mappings or writes to SQLite; even a structurally valid proposal returns awaiting_human_review. Without an approved same-scope reference, unknown room/type meanings generate clarification questions rather than guessed aliases. A draft needs its own explicit approval before normal persisted validation. See [COPILOT.md](docs/COPILOT.md) for the seven typed tools, states, preview limits and future provider interface. No API keys or new dependencies.
 
 ## Configuration and logging
 No automatic `.env` loading; `.env.example` is reference only.
@@ -82,4 +92,4 @@ Local Python and standard-library SQLite suffice for this phase. Runtime depende
 See [architecture](docs/ARCHITECTURE.md), [contracts](docs/DATA_CONTRACTS.md), [ADRs](docs/adr/0001-local-first.md), [roadmap](docs/ROADMAP.md) and [interview script](docs/INTERVIEW_DEMO.md).
 
 ## Limitations
-This is a synthetic local prototype, without production authorization, regulatory certification or global exactly-once guarantees. Raw deduplication has a documented SQLite scope; source receipts remain append-only. Synthetic quality reports now measure validation outcomes; they do not establish real business impact or production safety. Remote CI and Python 3.12 have not been verified locally. Phase 03 and the Hospital A/B YAMLs are accepted; Phase 04 requires separate authorization.
+This is a synthetic local prototype, without production authorization, regulatory certification or global exactly-once guarantees. Raw deduplication has a documented SQLite scope; source receipts remain append-only. Synthetic quality reports now measure validation outcomes; they do not establish real business impact or production safety. Remote CI and Python 3.12 have not been verified locally. Phase 03 and the Hospital A/B YAMLs are accepted. Phase 04 baseline is implemented and awaits review; newly generated drafts remain unapproved. Phase 05 requires separate authorization.

@@ -1,6 +1,6 @@
 # Phase 04 — Integration Copilot
 
-Status: Not started; approval required before entering this phase.
+Status: Deterministic baseline implemented and locally verified; awaiting user review. User authorized Phase 04 on 2026-11-18. See ../COPILOT.md and ../PHASE_04_REPORT.md. No concrete LLM provider implemented.
 
 ## 1. Objective
 Propose mappings for explicit human review.
@@ -28,8 +28,8 @@ Confident incorrect synonyms, untrusted source instructions and silent edits.
 inspect_schema, read_canonical_contract, list_known_mappings, propose_field_mapping, validate_mapping, preview_transform, generate_quality_report.
 ## 13. Completion checklist
 - [ ] Acceptance criteria verified and review recorded.
-- [ ] Relevant checks executed and evidence recorded.
-- [ ] Documentation, limitations and phase approval recorded.
+- [x] Relevant checks executed and evidence recorded.
+- [x] Documentation, limitations and implementation authorization recorded; next-phase approval pending.
 ## 14. Learning objectives
 Explain planning, tool execution, validation and approval boundaries.
 ## 15. Interview talking points

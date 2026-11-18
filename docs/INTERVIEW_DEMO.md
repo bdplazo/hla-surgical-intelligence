@@ -1,11 +1,11 @@
-# Three-minute demo — implemented through Phase 03
+# Three-minute demo — implemented through Phase 04 baseline
 
-0:00–0:25 Problem: hypothetical hospitals export equivalent RFID observations under different names. Synthetic-only independent prototype; no measured onboarding benefit.
-0:25–0:50 Architecture: show raw files/provenance, explicit YAML review and deterministic canonical validation. No mapping agent, state or solver exists yet.
-0:50–1:15 Input: compare hospital_a.json and hospital_b.csv and their proposed YAML aliases. Explain what a human must verify before executing approve-mapping.
-1:15–1:50 After an explicit human review, ingest and validate using the README and VALIDATION.md commands. Hospital A yields 4 valid and 5 quarantined unique candidates; inspect structured reasons and UTC-normalized events. Duplicate receipts are not separate candidates.
-1:50–2:15 Revalidate to reuse canonical results, then replay raw A to demonstrate receipts without duplicate history. Explain why replay duplicate percentage can be 100% while canonical outcomes remain stable.
-2:15–2:40 Run pytest and describe validation rollback, immutable mapping-version tests and the hand-written semantic regression fixture. Show original bytes and provenance remain intact.
-2:40–3:00 Trade-offs: local review receipts are not authenticated approval; SQLite is not an authorization service. Next phase may propose mappings but cannot bypass deterministic checks or human review.
+0:00–0:25 Problem: hypothetical hospitals name equipment events differently. Synthetic-only independent project; no claimed business improvement.
+0:25–0:50 Architecture: raw provenance, fixed read-only copilot tools, explicit human approval and deterministic canonical persistence. No LLM, equipment state or solver.
+0:50–1:20 Run the README copilot command using an explicitly accepted same-hospital/source reference. Inspect proposal.yaml and report.json: every field suggestion remains unconfirmed; known aliases are reused with provenance.
+1:20–1:45 Show awaiting_human_review and the preview's valid/quarantine counts. Remove known reference arguments or add a second alias field to show needs_clarification. The tool asks questions instead of inventing room semantics.
+1:45–2:10 Explain that this new draft cannot use the old reference approval. Only an explicit human review and new receipt permit normal Phase 03 validation. Copilot preview never touches SQLite.
+2:10–2:40 Run pytest: ambiguous schemas, provider-failure fallback, source-instruction text, no silent edits, rollback/versioning and deterministic draft regression. Compare preview time with actual raw ingestion time.
+2:40–3:00 Trade-offs: fixed aliases are intentionally limited; local receipts are not authenticated. A future LLM could add unconfirmed candidates behind the provider protocol but cannot bypass validation or approve mappings. Next phase requires user approval.
 
-For a non-specialist cofounder: the prototype keeps equipment messages, translates explicitly reviewed fields into a shared format and separates questionable records with reasons. It does not establish real equipment availability, clinical suitability or measured operational improvement.
+For a non-specialist cofounder: this prototype suggests how to translate equipment messages and shows what would pass or fail. A person still confirms the meaning. Original messages, approved interpretations and questionable records remain traceable. It does not establish real availability or clinical suitability.
