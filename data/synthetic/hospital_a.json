@@ -1,0 +1,79 @@
+[
+  {
+    "event_id": "A-1001",
+    "reader": "R04",
+    "tag": "EQ_928",
+    "timestamp": "2026-11-18T09:15:00Z",
+    "zone": "OR_03",
+    "action": "IN"
+  },
+  {
+    "event_id": "A-1002",
+    "reader": "R04",
+    "tag": "EQ_928",
+    "timestamp": "2026-11-18T09:00:00Z",
+    "zone": "OR_03",
+    "action": "IN"
+  },
+  {
+    "event_id": "A-1003",
+    "reader": "R04",
+    "tag": "EQ_928",
+    "timestamp": "2026-11-18T09:17:00Z",
+    "zone": "OR_03",
+    "action": "OUT"
+  },
+  {
+    "event_id": "A-1004",
+    "reader": "R04",
+    "tag": "EQ_928",
+    "timestamp": "invalid-timestamp",
+    "zone": "OR_03",
+    "action": "IN"
+  },
+  {
+    "event_id": "A-1005",
+    "reader": "R04",
+    "tag": "EQ_928",
+    "timestamp": "2026-11-18T09:19:00Z",
+    "zone": "UNKNOWN_ROOM",
+    "action": "IN"
+  },
+  {
+    "event_id": "A-1006",
+    "reader": "R04",
+    "tag": "EQ_928",
+    "timestamp": "2026-11-18T09:20:00Z",
+    "zone": "OR_03",
+    "action": "TELEPORT"
+  },
+  {
+    "event_id": "A-1007",
+    "reader": "R04",
+    "tag": "EQ_754",
+    "timestamp": "2026-11-18T09:21:00Z",
+    "zone": "OR_03",
+    "action": "IN"
+  },
+  {
+    "event_id": "A-1001",
+    "reader": "R04",
+    "tag": "EQ_928",
+    "timestamp": "2026-11-18T09:15:00Z",
+    "zone": "OR_03",
+    "action": "IN"
+  },
+  {
+    "event_id": "A-1001",
+    "reader": "R04",
+    "tag": "EQ_928",
+    "timestamp": "2026-11-18T09:15:00Z",
+    "zone": "OR_04",
+    "action": "IN"
+  },
+  {
+    "tag": "EQ_928",
+    "zone": "OR_03",
+    "action": "IN"
+  }
+]
