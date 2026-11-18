@@ -1,0 +1,17 @@
+# PROPOSAL: inspect semantics, then explicitly approve this exact file.
+hospital_id: SYNTH_A
+source_system: synthetic_rfid
+mapping_version: "1.0"
+schema_version: "1.0"
+fields:
+  "event_id": "event_id"
+  "equipment_id": "tag"
+  "room_id": "zone"
+  "event_type": "action"
+  "event_time": "timestamp"
+rooms:
+  "OR_03": "OR_03"
+  "OR_04": "OR_04"
+event_types:
+  "IN": "ENTRY"
+  "OUT": "EXIT"

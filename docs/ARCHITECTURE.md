@@ -1,6 +1,4 @@
-# Architecture
-
-Implemented: local Python package, environment configuration, JSON logging, synthetic generator, bounded JSON/CSV readers, trusted source context and transactional SQLite raw store. Validation, agents, operational context and solver remain planned.
+# Architecture — implemented through Phase 03
 
 ```mermaid
 flowchart LR
@@ -8,19 +6,20 @@ flowchart LR
     S --> R[Bounded raw readers]
     M[Explicit source context JSON] --> R
     R --> D[SQLite raw files + variants + runs + receipts]
-    D --> V[Canonical mapping + validation — planned]
-    Y[Human-approved YAML — planned] --> V
-    V --> H[Canonical history — planned]
-    V --> Q[Business quarantine + quality report — planned]
+    D --> V[Deterministic transformation + Pydantic contract]
+    Y[Explicit YAML proposal] --> U[Human review command + content-bound receipt]
+    U --> V
+    V --> H[Versioned canonical results]
+    V --> Q[Quarantine + quality report]
     H --> C[Tenant-scoped context — planned]
-    A[Agent tools — planned] --> P[Mapping proposal — planned]
-    P --> U[Human review — planned]
-    U --> Y
-    C --> O[Future solver recommendations]
+    A[Agent tools — planned] --> Y
+    C --> O[Solver recommendations — planned]
 ```
 
-Raw storage already flags missing identity and conflicting payloads. This is not canonical business validation. Content variants retain first provenance; every replay appends receipts. An atomic batch transaction protects files, history and receipts. See INGESTION.md for exact identity, counter and rollback scope.
+Single local Python application and SQLite. Raw data remains immutable; additive validation tables connect each result to raw_id, mapping hash, version and approval evidence. Each validation transaction commits mapping snapshot, new results, report and result links together. Replays append audit without duplicate interpretations; new approved mapping versions preserve prior history. Original bytes remain available even when business validation fails.
 
-No distributed services or runtime dependencies needed. A simple Python workflow will coordinate future mapping tools. Reconsider orchestration frameworks only for demonstrated branching/resume needs; an optional provider interface may isolate future LLM suggestions.
+Canonical hospital/source must match trusted raw metadata. Rooms/types require explicit aliases; timestamps require timezone. Unknowns quarantine instead of guesses. CLI approval records local human attestation only; there is no authentication or signed approval. The user explicitly accepted the Hospital A/B YAMLs on 2026-11-18; local content-bound receipts now record that approval. Future proposals still require explicit review. See VALIDATION.md and ADR 0004.
 
-The future read-only `get_equipment_context(hospital_id, equipment_id)` interface will distinguish observations, freshness/provenance, derived availability, maintenance, reservations, rules and suggestions. It is not implemented and RFID alone will not prove availability.
+No LLM, agent orchestration, vector database, operational state or optimization. Future tools will inspect schemas and propose mappings without bypassing this deterministic layer. Reconsider orchestration frameworks only when demonstrated branching/resume needs justify them.
+
+Future get_equipment_context(hospital_id, equipment_id) will distinguish observations, freshness/provenance, derived availability, maintenance, reservations, rules and suggestions. No availability is inferred from RFID alone.

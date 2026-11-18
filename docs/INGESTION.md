@@ -20,7 +20,7 @@ First observed content for a reliable key is `stored`; changed content for that 
 
 Missing/invalid IDs create identity quarantine with reason MISSING_OR_INVALID_EVENT_ID. An internal locator `(file_hash, data_row)` makes identical file replay safe; it is explicitly not an invented event ID. Identical unidentified rows at different positions remain separate. If an unidentified file is reordered/reformatted its locators can change: no cross-file business deduplication guarantee exists. Replay of the exact file reuses the same quarantined variants and audits duplicate receipts.
 
-No timestamp parsing, room checks or event-type validation yet. Late, malformed timestamp, unknown-room and unknown-action examples are preserved raw for Phase 03; raw storage must not label them canonically valid.
+No timestamp parsing, room checks or event-type validation yet. Late, malformed timestamp, unknown-room and unknown-action examples are preserved raw for the separate Phase 03 validation command; raw storage itself must not label them canonically valid.
 
 ## Counters
 Within each successful run:
@@ -49,3 +49,6 @@ SQLite is a local storage mechanism, not an authorization boundary. No real hosp
 
 ## Learning checkpoint
 Review read_records, then the identity classification inside persist_batch and the rollback integration test. Explain why a retransmission creates a receipt but no new raw history, why changed content is a conflict, and why a content hash alone cannot identify a legitimate business event.
+
+## Phase 03 extension
+This guide describes the raw-ingestion boundary, which remains unchanged. Separate canonical validation, explicit YAML approval and quality reports are now implemented; see VALIDATION.md.

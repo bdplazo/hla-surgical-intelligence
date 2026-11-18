@@ -1,0 +1,67 @@
+{
+  "additionalProperties": false,
+  "description": "Versioned event contract, independent of source payload shape.",
+  "properties": {
+    "event_id": {
+      "minLength": 1,
+      "title": "Event Id",
+      "type": "string"
+    },
+    "hospital_id": {
+      "minLength": 1,
+      "title": "Hospital Id",
+      "type": "string"
+    },
+    "equipment_id": {
+      "minLength": 1,
+      "title": "Equipment Id",
+      "type": "string"
+    },
+    "room_id": {
+      "minLength": 1,
+      "title": "Room Id",
+      "type": "string"
+    },
+    "event_type": {
+      "enum": [
+        "ENTRY",
+        "EXIT"
+      ],
+      "title": "Event Type",
+      "type": "string"
+    },
+    "event_time": {
+      "format": "date-time",
+      "title": "Event Time",
+      "type": "string"
+    },
+    "ingestion_time": {
+      "format": "date-time",
+      "title": "Ingestion Time",
+      "type": "string"
+    },
+    "source_system": {
+      "minLength": 1,
+      "title": "Source System",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_id",
+    "hospital_id",
+    "equipment_id",
+    "room_id",
+    "event_type",
+    "event_time",
+    "ingestion_time",
+    "source_system",
+    "schema_version"
+  ],
+  "title": "CanonicalEvent",
+  "type": "object"
+}

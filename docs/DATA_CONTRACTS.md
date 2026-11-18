@@ -1,30 +1,28 @@
-# Canonical RFID contract — proposed v1.0, not implemented or accepted
+# Canonical RFID contract — implemented v1.0, accepted with Phase 03 on 2026-11-18
 
-All fields below are required and non-null. No schema enforcement exists yet.
+Pydantic runtime implementation: src/hla_lab/contracts/events.py. JSON Schema export: contracts/rfid-event-1.0.schema.json. All nine fields required and non-null; extra canonical fields rejected. Runtime validators additionally enforce trimmed identifiers and aware UTC timestamps. No earlier accepted canonical schema or canonical stored records required migration; the accepted raw identity/provenance policy is unchanged.
 
 | Field | Type | Meaning / constraints |
 |---|---|---|
-| event_id | nonempty string | Source event identity, stable across retries |
-| hospital_id | nonempty string | Tenant from trusted mapping context |
-| equipment_id | nonempty string | Physical resource within hospital |
-| room_id | nonempty string | Reviewed hospital-specific canonical room |
-| event_type | enum string | ENTRY or EXIT only |
-| event_time | timezone-aware timestamp | Occurrence instant, normalize to UTC |
-| ingestion_time | timezone-aware timestamp | First receipt in this system, UTC |
-| source_system | nonempty string | Source namespace |
-| schema_version | literal string | 1.0 |
+| event_id | strict nonblank trimmed string | Source event identity, stable across retries |
+| hospital_id | strict nonblank trimmed string | Tenant from explicit mapping, matched against raw metadata |
+| equipment_id | strict nonblank trimmed string | Physical resource within hospital |
+| room_id | strict nonblank trimmed string | Canonical room from explicit room dictionary |
+| event_type | enum string | ENTRY or EXIT from explicit aliases |
+| event_time | aware ISO datetime | Occurrence instant normalized to UTC |
+| ingestion_time | aware ISO datetime | First raw receipt time normalized to UTC |
+| source_system | strict nonblank trimmed string | Source namespace verified against raw metadata |
+| schema_version | literal string | 1.0, explicitly declared in mapping |
 
-Planned event key: (hospital_id, source_system, event_id); equipment key: (hospital_id, equipment_id). A content fingerprint detects unchanged retransmissions, not event identity. Without reliable source identity, flag unsupported identity guarantees. A changed payload reusing the key is a conflict requiring explicit revision policy, not a new silent event. No random retry IDs.
+No inference of timezone, equipment identifiers, unknown room semantics or unknown event types. No assumptions about freshness proving availability. Future timestamps are observable in freshness metrics; no unstated clinical or temporal acceptance rule is invented.
 
-Raw envelopes will retain original payload, source file/row, ingestion and processing times, source system, hospital, mapping version, run ID and content hash. Invalid records retain structured reason codes. Mapping proposals cannot be applied until human approval. Version and approval history are required.
+## Accepted identity/correction/provenance rules
+The user accepted the design rules and Phase 02 implementation on 2026-11-18. Event key is (hospital_id, source_system, event_id); equipment key is (hospital_id, equipment_id). Content fingerprints identify equivalent payload variants, never business events. Reliable IDs are preserved; missing IDs quarantine with an internal exact-file/row locator, not fabricated event identity. Distinct source IDs on one equipment item remain separate events. Original file bytes and receipt audit remain intact.
 
-Latest state is derived by event_time and a documented stable tie-break; late arrivals retain history without overwriting newer state. The tie-break and EXIT state semantics must be agreed in Phase 05. Contradictory equal-time observations must be surfaced. No state is implemented.
+Changed payload under the same key is a conflict requiring explicit review, never a silent correction. Identity conflicts and missing-ID quarantines cannot become canonical valid events through a mapping. Late events remain history; no operational state is implemented. See INGESTION.md for detailed raw scope and limitations.
 
-## Accepted identity/correction policy — 2026-11-18
-The user accepted these design rules: identical tenant/source/event ID and content is a technical retransmission; changed content under that key is retained as a conflict for human review without automatic overwrite; distinct event IDs on one equipment item remain separate events; equipment IDs are hospital-scoped; missing event IDs quarantine rather than inventing identity; late arrival does not establish latest state. Phase 02 now enforces these rules at raw-ingestion identity level; event-time ordering and canonical business validation remain deferred. The canonical schema itself remains proposed; no schema migration is required because no events are stored yet.
+## Mapping/version review boundaries
+Raw JSON source configuration version and canonical YAML mapping version serve different stages and are separately retained. The user explicitly accepted Hospital A/B YAML mappings on 2026-11-18; content-bound local receipts record the acceptance (see MAPPING_ACCEPTANCE.md). A review receipt is tied to exact YAML bytes and scope. Accepted mapping versions cannot be changed silently; changed bytes require a new version and a new review. Canonical interpretations coexist by mapping hash rather than overwrite accepted history. See VALIDATION.md and ADR 0004 for additive schema, approval and re-evaluation implications.
 
-## Implemented raw envelope
-See INGESTION.md for normalized storage of source bytes, payload variants, metadata and receipt provenance. The canonical event contract above remains unimplemented; the Phase 02 schema does not change it. Raw source descriptors are JSON context configuration, not approved canonical field mappings. Missing/invalid identity and reused-ID content conflicts have structured reason codes; all other raw business fields are preserved unchanged.
-
-## Phase 02 review acceptance — 2026-11-18
-The user explicitly accepted the implemented identity/provenance decisions, including tenant/source-scoped identity, content variants, conflict preservation, replay receipts, original-byte retention and the documented limits of unidentified file/row locators. This acceptance does not authorize starting Phase 03 or change the proposed canonical schema.
+## Future state policy
+Latest state will use event_time and a documented stable tie-break rather than reception order. EXIT semantics and contradictory equal-time observations must be resolved in Phase 05. Phase 03 has no state table or availability claims.
